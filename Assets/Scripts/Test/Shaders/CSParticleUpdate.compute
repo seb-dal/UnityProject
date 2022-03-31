@@ -1,0 +1,91 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CS_ParticleUpdate
+
+float randSeed = 1337;
+// Pseudo-random value in half-open range [0:1].
+float random(float2 seed)
+{
+    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233) * randSeed)) * 43758.5453)) * 1;
+}
+
+
+struct ParticuleShader
+{
+    float3 _speed;
+    float4x4 mat;
+	
+    
+    float _lifespanMax;
+    float _lifespan;
+
+    float _fadeDurationInit;
+    float _fadeDuration;
+	
+    
+    float _colorChangeTime;
+    float _colorChangeDuration;
+	
+    float4 _previousColor;
+    float4 _nextColor;
+    float4 _spriteColor;
+	
+    float _deceleration;
+    
+    int _changeColor;
+};
+
+
+
+// Particles data buffer
+RWStructuredBuffer<ParticuleShader> _Particules;
+RWStructuredBuffer<int> counterBufferAlive;
+// delta Time for computation framerate free
+float deltaTime;
+// global time for random
+float time;
+
+[numthreads(32, 1, 1)]
+void CS_ParticleUpdate(uint3 id : SV_DispatchThreadID)
+{
+    // same that the upadte of Particle
+    
+    _Particules[id.x]._lifespan -= deltaTime;
+    
+    if (_Particules[id.x]._lifespan > 0.f)
+        counterBufferAlive.IncrementCounter();
+    
+    _Particules[id.x].
+    _fadeDuration -= deltaTime;
+    
+    _Particules[id.x].mat._14_24_34 = _Particules[id.x].mat._14_24_34 + _Particules[id.x]._speed * deltaTime;
+    _Particules[id.x]._speed = _Particules[id.x]._speed - _Particules[id.x]._speed * _Particules[id.x]._deceleration * deltaTime;
+
+    float4 a = float4(0, 0, 0, max(-_Particules[id.x]._fadeDuration, 0.0f) / (_Particules[id.x]._lifespanMax / _Particules[id.x]._fadeDurationInit));
+    
+    if (_Particules[id.x]._changeColor == 0)
+    {
+        _Particules[id.x]._spriteColor = float4(_Particules[id.x]._spriteColor.xyz, 1) - a;
+        return;
+    }
+    
+    if (_Particules[id.x]._colorChangeTime > _Particules[id.x]._colorChangeDuration)
+    {
+        _Particules[id.x]._previousColor = _Particules[id.x]._nextColor;
+        
+        // not a great random generator but that do the job
+        _Particules[id.x]._nextColor = float4(
+            random(float2(id.x, time)),
+            random(float2(id.x + 53.5746, time + 23.246)),
+            random(float2(time, id.x + 25214.5)),
+            1.0f
+        );
+        _Particules[id.x]._colorChangeTime = _Particules[id.x]._colorChangeTime - _Particules[id.x]._colorChangeDuration;
+    }
+    
+    _Particules[id.x]._spriteColor = lerp(_Particules[id.x]._previousColor, _Particules[id.x]._nextColor, _Particules[id.x]._colorChangeTime / _Particules[id.x]._colorChangeDuration) - a;
+
+    _Particules[id.x]._colorChangeTime += deltaTime;
+}
+
+
+

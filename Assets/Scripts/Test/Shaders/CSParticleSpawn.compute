@@ -1,0 +1,99 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CS_ParticleSpawn
+
+float randSeed = 1337;
+// Pseudo-random value in half-open range [0:1].
+float random(float2 seed)
+{
+    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233) * randSeed)) * 43758.5453)) * 1;
+}
+float Range(float min, float max, float2 seed)
+{
+    return min + random(seed) * (max - min);
+}
+
+
+struct ParticuleShader
+{
+    float3 _speed;
+    float4x4 mat;
+	
+    
+    float _lifespanMax;
+    float _lifespan;
+
+    float _fadeDurationInit;
+    float _fadeDuration;
+	
+    
+    float _colorChangeTime;
+    float _colorChangeDuration;
+	
+    float4 _previousColor;
+    float4 _nextColor;
+    float4 _spriteColor;
+	
+    float _deceleration;
+    
+    int _changeColor;
+};
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructuredBuffer<ParticuleShader> _Particules;
+
+// global time for random
+float time;
+
+int NB_Spawn;
+int offset;
+int MaxParticules;
+
+float _colorChangeDurationMin;
+float _colorChangeDurationMax;
+bool ChangeColor;
+
+float _particleMinFadeout;
+float _particleLifeMin, _particleLifeMax;
+float _particleSpeedMin, _particleSpeedMax;
+float _deceleration;
+
+float3 minVector, maxVector;
+float3 origine;
+
+[numthreads(16, 1, 1)]
+void CS_ParticleSpawn(uint3 id : SV_DispatchThreadID)
+{
+    if (NB_Spawn > 0 && (int) (id.x) < NB_Spawn)
+    {
+        int ids = (offset + id.x) % MaxParticules;
+        
+        float life = Range(_particleLifeMin, _particleLifeMax, float2(time, id.x));
+        float fade = Range(_particleMinFadeout, _particleLifeMin, float2(time + 35.46, id.x));
+        // NO MULTIPLICATION IN RANDOM SEED
+        float4 color = float4(
+            random(float2(id.x + 713, time)),
+            random(float2(id.x + 53.5746, time + 23.246)),
+            random(float2(time, id.x + 25214.5)),
+            1.0f
+        );
+        
+        float3 result = lerp(minVector, maxVector, random(float2(id.x + 97821.11155, time)));
+        float particleSpeed = Range(_particleSpeedMin, _particleSpeedMax, float2(id.x + 3641.4154, time));
+        
+        _Particules[ids].mat._12_13_14 = _Particules[ids].mat._21_23_24 = _Particules[ids].mat._31_32_34 = _Particules[ids].mat._41_42_43 = 0;
+        _Particules[ids].mat._11_22_33_44 = 1;
+        _Particules[ids].mat._14_24_34 = origine;
+        _Particules[ids]._colorChangeTime = 0;
+        _Particules[ids]._lifespan = _Particules[ids]._lifespanMax = life;
+        _Particules[ids]._fadeDurationInit = _Particules[ids]._fadeDuration = fade;
+        
+        _Particules[ids]._spriteColor = _Particules[ids]._previousColor = color;
+        _Particules[ids]._colorChangeDuration = Range(_colorChangeDurationMin, _colorChangeDurationMax, float2(time + 0.33334, id.x));
+        _Particules[ids]._speed = result * particleSpeed;
+        _Particules[ids]._deceleration = _deceleration;
+        _Particules[ids]._changeColor = ChangeColor ? 1 : 0;
+        
+    }
+
+}

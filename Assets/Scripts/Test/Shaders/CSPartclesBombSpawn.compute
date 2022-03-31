@@ -1,0 +1,67 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CS_ParticleSpawn
+
+float randSeed = 1337;
+// Pseudo-random value in half-open range [0:1].
+float random(float2 seed)
+{
+    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233) * randSeed)) * 43758.5453)) * 1;
+}
+float Range(float min, float max, float2 seed)
+{
+    return min + random(seed) * (max - min);
+}
+
+
+
+struct ParticuleShader
+{
+    float3 _speed;
+    float4x4 mat;
+	
+    
+    float _lifespanMax;
+    float _lifespan;
+
+    float _fadeDurationInit;
+    float _fadeDuration;
+	
+    
+    float _colorChangeTime;
+    float _colorChangeDuration;
+	
+    float4 _previousColor;
+    float4 _nextColor;
+    float4 _spriteColor;
+	
+    float _deceleration;
+    
+    int _changeColor;
+};
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructuredBuffer<ParticuleShader> _Particules;
+
+float time;
+
+float4 _startColor, _endColor;
+float _speedMin, _speedMax, _deceleration;
+float3 origine;
+
+[numthreads(32, 1, 1)]
+void CS_ParticleSpawn(uint3 id : SV_DispatchThreadID)
+{
+    _Particules[id.x].mat._12_13_14 = _Particules[id.x].mat._21_23_24 = _Particules[id.x].mat._31_32_34 = _Particules[id.x].mat._41_42_43 = 0;
+    _Particules[id.x].mat._11_22_33_44 = 1;
+    _Particules[id.x].mat._14_24_34 = origine;
+    
+    _Particules[id.x]._colorChangeTime = 0.0;
+    _Particules[id.x]._changeColor = 1;
+    _Particules[id.x]._colorChangeDuration = _Particules[id.x]._lifespan = _Particules[id.x]._lifespanMax = 2.0;
+    _Particules[id.x]._fadeDurationInit = _Particules[id.x]._fadeDuration = 1.0;
+    _Particules[id.x]._spriteColor = _Particules[id.x]._previousColor = _startColor;
+    _Particules[id.x]._nextColor = _endColor;
+    _Particules[id.x]._speed = float3(Range(-1, 1, float2(id.x + 4635, time + 17515)), Range(-1, 1, float2(id.x + 235, time + 7428)), 0) * Range(_speedMin, _speedMax, float2(id.x, time));
+    _Particules[id.x]._deceleration = _deceleration;
+
+}

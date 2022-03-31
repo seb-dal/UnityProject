@@ -1,0 +1,54 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CS_ParticleDelete
+
+
+float randSeed = 1337;
+// Pseudo-random value in half-open range [0:1].
+float random(float2 seed)
+{
+    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233) * randSeed)) * 43758.5453)) * 1;
+}
+
+
+
+
+struct ParticuleShader
+{
+    float3 _speed;
+    float4x4 mat;
+	
+    
+    float _lifespanMax;
+    float _lifespan;
+
+    float _fadeDurationInit;
+    float _fadeDuration;
+	
+    
+    float _colorChangeTime;
+    float _colorChangeDuration;
+	
+    float4 _previousColor;
+    float4 _nextColor;
+    float4 _spriteColor;
+	
+    float _deceleration;
+    
+    int _changeColor;
+};
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructuredBuffer<ParticuleShader> _Particules;
+
+float time;
+
+[numthreads(32, 1, 1)]
+void CS_ParticleDelete(uint3 id : SV_DispatchThreadID)
+{
+    if (random(float2(time, id.x)) > 0.5)
+    {
+        _Particules[id.x]._lifespan = -1.0;
+        _Particules[id.x]._spriteColor.a = 0.0;
+
+    }
+}

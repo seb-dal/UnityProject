@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8275527237504098377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8272394388302202557}
+  - component: {fileID: 3613430268116568816}
+  m_Layer: 0
+  m_Name: BombGPU
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8272394388302202557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275527237504098377}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3613430268116568816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275527237504098377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69c97943cefb2cb479b3fcfcb1d2b6a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CSParticlesUpdate: {fileID: 7200000, guid: 9f5ea7cdc871d5846b35358f58b9d9b4, type: 3}
+  CSParticlesSpawn: {fileID: 7200000, guid: 82d58883fe0176347bdf1678e9ee9117, type: 3}
+  material: {fileID: 2100000, guid: f2b2d03c5482fc2459cf4a2fba7dcf33, type: 2}
+  _particleCount: 500
+  _particlePrefab: {fileID: 1337187115675574, guid: 0cd2b1f0368a5bc4abb39a38a6bd0b40,
+    type: 3}
+  _deceleration: 1
+  _speedMin: 20
+  _speedMax: 200
+  _startColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _endColor: {r: 1, g: 0, b: 0, a: 1}

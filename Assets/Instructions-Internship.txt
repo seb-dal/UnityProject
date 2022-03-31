@@ -1,0 +1,58 @@
+Instructions
+------------
+
+This project contains a very simple particle system. It has been created using Unity 2018.3.3f1 (the
+latest stable version at the time we updated the project), but any 2018.3.xxx should work fine.
+You can download this version at this url :
+https://unity3d.com/fr/get-unity/download/archive?_ga=2.33234878.1037282688.1548845390-724760772.1508947446.
+
+If you have any problems opening the project, please let us know.
+
+Don't forget to open "Test.scene".
+
+The test is expected to take no more than a couple of hours, but you can spend as long as you like.
+You may refer to any reference materials you think would be useful, e.g. MSDN, Google.
+
+Please don't worry if you get stuck on a question, just move on to the next one.
+The test is mostly to show us how you think, not whether your answers match ours exactly,
+so it's definitely not the case that you would "fail" the test by skipping a question.
+
+Please bear in mind that :
+- You CANNOT use Unity's native ParticleSystem, please consider we have a good reason to discard that feature.
+- You CANNOT modify the emission rate or particle lifespans in any way that would result in less particles onscreen. Expected outcome is around 14K particles.
+- You can add new classes and files if you want.
+- For the UI, you should use the UI module of Unity (Canvas, Button, etc..) and NOT IMGUI (that uses the OnGUI() method).
+
+UI :
+	U1 - Make a simple "MainMenu" scene containing a Canvas and a Button. Clicking on this button starts the asynchonous (non-additive) loading of the "Test" scene.
+
+	U2 - When the loading starts, display a "splash screen" that fades in (alpha from 0 to 1) during 1 second, and once the loading is finished it fades out (alpha 1 to 0) during 1 second.
+		Use the "SplashScreen" prefab to do this.
+		Don't shorten the fade in time even if the loading of the scene takes less than 1 second.
+		Use a coroutine to change the alpha of the splash screen.
+
+BUGS :
+	B1 - When compiled in Release mode, the number of particles isn't updated and stays at 0 in the
+	info display, but works fine in Development mode.
+
+	B2 - The bombs emit particles in a square pattern, they should emit in a circle/sphere pattern.
+
+	B3 - There probably are other bugs hidden in the code, try to fix as much as you can.
+
+OPTIMIZATIONS :
+	O1 - Framerate drops progressively when the game run for a moment, find the cause of this drop
+	and fix it.
+
+	O2 - What strategies would you use to improve the framerate ?
+	
+	Bonus - Implement one or several of those strategies to optimize the code (but do not spend too much time on this).
+
+Features to add :
+	F1 - We'd like the particles to fade out at the end of their lifespan.
+		- The fade duration must be tweakable in the particle inspector.
+		- The fade should not change the lifespan of the particle, meaning that if the random
+		lifespan was t, then the particle should display normally during t - f (where f is the
+		duration of the fade), then fade on f.
+
+	F2 - Implement a method that instantly kills 50% of the particles. Add a UI button or bind a key
+	to this function.
