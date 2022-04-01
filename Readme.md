@@ -1,20 +1,20 @@
 # Test project Particles System EdenGames
 
-This is a test project of a custom particles System for intership from EdenGames. 
+This is a test project of a custom particle System for internship from EdenGames.
+
 
 ##### Unity Version advice: 2018.3.3f1
 
-If you are passing this test, DON'T BLINDLY COPY, try doing this on your own. Plus this implementation use GPU which is not require. Otherwise, if you want to use my GPU Particles System feel free to use part of it or every thing that i have done.
+If you are passing this test, DON'T BLINDLY COPY, try doing this on your own. Plus this implementation use GPU which is not required. Otherwise, if you want to use my GPU Particles System, feel free to use part of it or everything that I have done.
 
 ## Description
 
-This test require to [[Instructions]](Assets/Instructions-Internship.txt)
+This test requires to [[instructions]](Assets/Instructions-Internship.txt)
 
-- Create a main menu with some specific features
-- Correct some bugs in the CPU particles System
-- Optimize the frame-rate so that it stop dropping and explain how to increase the frame-rate(which i have done)
-- And implement some features on the particles 
-
+- Create a main menu with some specific features.
+- Correct some bugs in the CPU particles System.
+- Optimize the frame-rate so that it stops dropping and explain how to increase the frame-rate. (which I have done)
+- And implement some features on the particles.
 
 
 ## GPU implementations
@@ -29,21 +29,11 @@ The current FPS limit depend entirely on GPU capacity and is CPU friendly.
 </figure>
 
 There should be no need to have 2 million particles as it could cover the entire screen multiple times.
-
 The compute Shader for the spawn and update of the particles can be change easily to create other effects if needed.
+If you need more variables in a Compute Shader, you will have to create a new class.
 
-If you need more variables in a Compute Shader you will have to create a new classes.
+All the required Features work on the CPU and GPU implementation.																	
 
-
-All the required Features work on the CPU and GPU implementation.																			
-
-*GPU and async Functions used
-
-```Unity
-- ComputeShader / Shader / ComputeBuffer
-- Graphics.DrawMeshInstancedIndirect 
-- AsyncGPUReadback.Request
-```
 
 
 
