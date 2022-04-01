@@ -1,38 +1,9 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CS_ParticleUpdate
 
-float randSeed = 1337;
-// Pseudo-random value in half-open range [0:1].
-float random(float2 seed)
-{
-    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233))) * 43758.5453 * randSeed)) * 1;
-}
+#include "./CSRandomFuncs.cginc"
 
-
-struct ParticuleShader
-{
-    float3 _speed;
-    float4x4 mat;
-	
-    
-    float _lifespanMax;
-    float _lifespan;
-
-    float _fadeDurationInit;
-    float _fadeDuration;
-	
-    
-    float _colorChangeTime;
-    float _colorChangeDuration;
-	
-    float4 _previousColor;
-    float4 _nextColor;
-    float4 _spriteColor;
-	
-    float _deceleration;
-    
-    int _changeColor;
-};
+#include "./CSParticlesStructure.cginc"
 
 
 
