@@ -5,7 +5,7 @@ float randSeed = 1337;
 // Pseudo-random value in half-open range [0:1].
 float random(float2 seed)
 {
-    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233) * randSeed)) * 43758.5453)) * 1;
+    return (frac(sin(dot(seed.xy, float2(12.9898, 78.233))) * 43758.5453 * randSeed)) * 1;
 }
 float Range(float min, float max, float2 seed)
 {
@@ -55,10 +55,12 @@ void CS_ParticleSpawn(uint3 id : SV_DispatchThreadID)
     _Particules[id.x].mat._11_22_33_44 = 1;
     _Particules[id.x].mat._14_24_34 = origine;
     
+    float effect = random(float2(id.x + 111, time + 222));
+    
     _Particules[id.x]._colorChangeTime = 0.0;
     _Particules[id.x]._changeColor = 1;
-    _Particules[id.x]._colorChangeDuration = _Particules[id.x]._lifespan = _Particules[id.x]._lifespanMax = 2.0;
-    _Particules[id.x]._fadeDurationInit = _Particules[id.x]._fadeDuration = 1.0;
+    _Particules[id.x]._colorChangeDuration = _Particules[id.x]._lifespan = _Particules[id.x]._lifespanMax = 1.5 + effect;
+    _Particules[id.x]._fadeDurationInit = _Particules[id.x]._fadeDuration = 0.5 + effect;
     _Particules[id.x]._spriteColor = _Particules[id.x]._previousColor = _startColor;
     _Particules[id.x]._nextColor = _endColor;
     _Particules[id.x]._speed = float3(Range(-1, 1, float2(id.x + 4635, time + 17515)), Range(-1, 1, float2(id.x + 235, time + 7428)), 0) * Range(_speedMin, _speedMax, float2(id.x, time));
